@@ -3,7 +3,7 @@
   "version": "0.2",
   "slug": "acurite2mqtt",
   "description": "Acurite Sensors to Home Assistant via MQTT with Autodiscovery",
-  "url": "https://github.com/thejeffreystone/hassio-addons/acurite2mqtt",
+  "url": "https://github.com/thejeffreystone/hassio_addons",
 
   "startup": "before",
   "arch": ["aarch64", "amd64", "armhf", "armv7", "i386"],
