@@ -1,5 +1,6 @@
 
 # ignore any of these files no matter where they are using double *
+.devcontainer/
 **.DS_Store
 **._*
 **.HA_VERSION
