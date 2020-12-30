@@ -11,8 +11,6 @@
 # (use Python 3.x or pip install python-daemon)
 # import daemon
 
-from __future__ import print_function, with_statement
-
 import json
 import os
 import time
@@ -26,12 +24,21 @@ MQTT_PASSWORD = os.environ['MQTT_PASSWORD']
 MQTT_TOPIC = os.environ['MQTT_TOPIC']
 DISCOVERY_PREFIX = os.environ['DISCOVERY_PREFIX']
 DISCOVERY_INTERVAL = os.environ['DISCOVERY_INTERVAL']
+DEBUG = False
 
 # Convert number environment variables to int
 MQTT_PORT = int(MQTT_PORT)
 DISCOVERY_INTERVAL = int(DISCOVERY_INTERVAL)
 
 discovery_timeouts = {}
+
+# Fields used for creating topic names
+NAMING_KEYS = [ "type", "model", "subtype", "channel", "id" ]
+
+# Fields that get ignored when publishing to Home Assistant
+# (reduces noise to help spot missing field mappings)
+SKIP_KEYS = NAMING_KEYS + [ "time", "mic", "mod", "freq", "sequence_num",
+                            "message_type", "exception", "raw_msg" ]
 
 mappings = {
     "temperature_C": {
@@ -101,7 +108,7 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "H",
         "config": {
-            "device_class": "moisture",
+            "device_class": "humidity",
             "name": "Moisture",
             "unit_of_measurement": "%",
             "value_template": "{{ value|float }}"
@@ -134,7 +141,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "WS",
         "config": {
-            "device_class": "weather",
             "name": "Wind Speed",
             "unit_of_measurement": "km/h",
             "value_template": "{{ value|float }}"
@@ -145,7 +151,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "WS",
         "config": {
-            "device_class": "weather",
             "name": "Wind Speed",
             "unit_of_measurement": "mi/h",
             "value_template": "{{ value|float }}"
@@ -166,7 +171,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "WS",
         "config": {
-            "device_class": "weather",
             "name": "Wind Speed",
             "unit_of_measurement": "km/h",
             "value_template": "{{ float(value|float) * 3.6 }}"
@@ -177,7 +181,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "GS",
         "config": {
-            "device_class": "weather",
             "name": "Gust Speed",
             "unit_of_measurement": "km/h",
             "value_template": "{{ value|float }}"
@@ -198,7 +201,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "GS",
         "config": {
-            "device_class": "weather",
             "name": "Gust Speed",
             "unit_of_measurement": "km/h",
             "value_template": "{{ float(value|float) * 3.6 }}"
@@ -209,7 +211,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "WD",
         "config": {
-            "device_class": "weather",
             "name": "Wind Direction",
             "unit_of_measurement": "°",
             "value_template": "{{ value|float }}"
@@ -220,7 +221,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "RT",
         "config": {
-            "device_class": "weather",
             "name": "Rain Total",
             "unit_of_measurement": "mm",
             "value_template": "{{ value|float }}"
@@ -231,7 +231,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "RR",
         "config": {
-            "device_class": "weather",
             "name": "Rain Rate",
             "unit_of_measurement": "mm/h",
             "value_template": "{{ value|float }}"
@@ -306,7 +305,7 @@ mappings = {
         "config": {
             "device_class": "signal_strength",
             "unit_of_measurement": "dB",
-            "value_template": "{{ valuei|float|round(2) }}"
+            "value_template": "{{ value|float|round(2) }}"
         }
     },
 
@@ -336,7 +335,7 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "lux",
         "config": {
-            "device_class": "weather",
+            "device_class": "illuminance",
             "name": "Outside Luminancee",
             "unit_of_measurement": "lux",
             "value_template": "{{ value|int }}"
@@ -347,7 +346,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "uv",
         "config": {
-            "device_class": "weather",
             "name": "UV Index",
             "unit_of_measurement": "UV Index",
             "value_template": "{{ value|int }}"
@@ -406,7 +404,10 @@ def mqtt_message(client, userdata, msg):
         # Decode JSON payload
         data = json.loads(msg.payload.decode())
         # print("DATA  ", data)
-        bridge_event_to_hass(client, msg.topic, data)
+        topicprefix = "/".join(msg.topic.split("/", 2)[:2])
+        bridge_event_to_hass(client, topicprefix, data)
+        if DEBUG:
+            print("{} : {}".format(topicprefix, data))
 
     except json.decoder.JSONDecodeError:
         print("JSON decode error: " + msg.payload.decode())
@@ -421,72 +422,88 @@ def sanitize(text):
             .replace(".", "_")
             .replace("&", ""))
 
+def rtl_433_device_topic(data):
+    """Return rtl_433 device topic to subscribe to for a data element"""
 
-def publish_config(mqttc, topic, manmodel, instance, channel, mapping):
+    path_elements = []
+
+    for key in NAMING_KEYS:
+        if key in data:
+            element = sanitize(str(data[key]))
+            path_elements.append(element)
+
+    return '/'.join(path_elements)
+
+def publish_config(mqttc, topic, model, instance, mapping):
     """Publish Home Assistant auto discovery data."""
     global discovery_timeouts
 
+    instance_no_slash = instance.replace("/", "-")
     device_type = mapping["device_type"]
-    object_id = "_".join([manmodel.replace("-", "_"), instance])
     object_suffix = mapping["object_suffix"]
+    object_id = instance_no_slash
+    object_name = "-".join([object_id,object_suffix])
 
-    path = "/".join([DISCOVERY_PREFIX, device_type, object_id, object_suffix, "config"])
+    path = "/".join([DISCOVERY_PREFIX, device_type, object_id, object_name, "config"])
 
     # check timeout
     now = time.time()
     if path in discovery_timeouts:
         if discovery_timeouts[path] > now:
-            return
+            return False
 
     discovery_timeouts[path] = now + DISCOVERY_INTERVAL
 
     config = mapping["config"].copy()
-    config["state_topic"] = "/".join([MQTT_TOPIC, manmodel, instance, channel, topic])
-    config["name"] = " ".join([manmodel.replace("-", " "), instance, object_suffix])
-    config["unique_id"] = "".join(["rtl433", device_type, instance, object_suffix])
-    config["availability_topic"] = "/".join([MQTT_TOPIC, "status"])
+    config["name"] = object_name
+    config["state_topic"] = topic
+    config["unique_id"] = object_name
+    config["device"] = { "identifiers": object_id, "name": object_id, "model": model, "manufacturer": "rtl_433" }
 
-    # add Home Assistant device info
+    if DEBUG:
+        print(path,":",json.dumps(config))
 
-    manufacturer, model = manmodel.split("-", 1)
+    mqttc.publish(path, json.dumps(config), qos=0, retain=True)
 
-    device = {}
-    device["identifiers"] = instance
-    device["name"] = instance
-    device["model"] = model
-    device["manufacturer"] = manufacturer
-    config["device"] = device
-
-    mqttc.publish(path, json.dumps(config),  qos=0, retain=True)
-
-    # print(path, " : ", json.dumps(config))
+    return True
 
 
 
-def bridge_event_to_hass(mqttc, topic, data):
+def bridge_event_to_hass(mqttc, topicprefix, data):
     """Translate some rtl_433 sensor data to Home Assistant auto discovery."""
 
     if "model" not in data:
         # not a device event
         return
-    manmodel = sanitize(data["model"])
 
-    if "id" in data:
-        instance = str(data["id"])
+    model = sanitize(data["model"])
+
+    skipped_keys = []
+    published_keys = []
+
+    instance = rtl_433_device_topic(data)
     if not instance:
         # no unique device identifier
+        if DEBUG:
+            print("No suitable identifier found for model: ", model)
         return
-
-    if "channel" in data:
-        channel = str(data["channel"])
-    else:
-        channel = '0'
 
     # detect known attributes
     for key in data.keys():
         if key in mappings:
-            publish_config(mqttc, key, manmodel, instance, channel, mappings[key])
-            # print(key)
+            # topic = "/".join([topicprefix,"devices",model,instance,key])
+            topic = "/".join([topicprefix,"devices",instance,key])
+            if publish_config(mqttc, topic, model, instance, mappings[key]):
+                published_keys.append(key)
+        else:
+            if key not in SKIP_KEYS:
+                skipped_keys.append(key)
+
+    if published_keys and DEBUG:
+        print("Published %s: %s" % (instance, ", ".join(published_keys)))
+
+        if skipped_keys and DEBUG:
+            print("Skipped %s: %s" % (instance, ", ".join(skipped_keys)))
 
 
 def rtl_433_bridge():
@@ -507,11 +524,7 @@ def rtl_433_bridge():
 
 def run():
     """Run main or daemon."""
-    # with daemon.DaemonContext(files_preserve=[sock]):
-    #  detach_process=True
-    #  uid
-    #  gid
-    #  working_directory
+   
     rtl_433_bridge()
 
 
