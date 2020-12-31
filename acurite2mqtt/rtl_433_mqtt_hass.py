@@ -11,6 +11,8 @@
 # (use Python 3.x or pip install python-daemon)
 # import daemon
 
+from __future__ import print_function, with_statement
+
 import json
 import os
 import time
@@ -24,21 +26,13 @@ MQTT_PASSWORD = os.environ['MQTT_PASSWORD']
 MQTT_TOPIC = os.environ['MQTT_TOPIC']
 DISCOVERY_PREFIX = os.environ['DISCOVERY_PREFIX']
 DISCOVERY_INTERVAL = os.environ['DISCOVERY_INTERVAL']
-DEBUG = False
+DEBUG = os.environ['DEBUG']
 
 # Convert number environment variables to int
 MQTT_PORT = int(MQTT_PORT)
 DISCOVERY_INTERVAL = int(DISCOVERY_INTERVAL)
 
 discovery_timeouts = {}
-
-# Fields used for creating topic names
-NAMING_KEYS = [ "type", "model", "subtype", "channel", "id" ]
-
-# Fields that get ignored when publishing to Home Assistant
-# (reduces noise to help spot missing field mappings)
-SKIP_KEYS = NAMING_KEYS + [ "time", "mic", "mod", "freq", "sequence_num",
-                            "message_type", "exception", "raw_msg" ]
 
 mappings = {
     "temperature_C": {
@@ -130,7 +124,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "WS",
         "config": {
-            "device_class": "weather",
             "name": "Wind Speed",
             "unit_of_measurement": "km/h",
             "value_template": "{{ value|float }}"
@@ -313,7 +306,6 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "D",
         "config": {
-            "device_class": "depth",
             "name": "Depth",
             "unit_of_measurement": "cm",
             "value_template": "{{ value|float }}"
@@ -403,11 +395,9 @@ def mqtt_message(client, userdata, msg):
     try:
         # Decode JSON payload
         data = json.loads(msg.payload.decode())
-        # print("DATA  ", data)
-        topicprefix = "/".join(msg.topic.split("/", 2)[:2])
-        bridge_event_to_hass(client, topicprefix, data)
-        if DEBUG:
-            print("{} : {}".format(topicprefix, data))
+        if DEBUG == 'true':
+            print("Publishing to {} : {}".format(msg.topic, json.dumps(data)))
+        bridge_event_to_hass(client, msg.topic, data)
 
     except json.decoder.JSONDecodeError:
         print("JSON decode error: " + msg.payload.decode())
@@ -422,88 +412,72 @@ def sanitize(text):
             .replace(".", "_")
             .replace("&", ""))
 
-def rtl_433_device_topic(data):
-    """Return rtl_433 device topic to subscribe to for a data element"""
 
-    path_elements = []
-
-    for key in NAMING_KEYS:
-        if key in data:
-            element = sanitize(str(data[key]))
-            path_elements.append(element)
-
-    return '/'.join(path_elements)
-
-def publish_config(mqttc, topic, model, instance, mapping):
+def publish_config(mqttc, topic, model, instance, channel, mapping):
     """Publish Home Assistant auto discovery data."""
     global discovery_timeouts
 
-    instance_no_slash = instance.replace("/", "-")
     device_type = mapping["device_type"]
+    object_id = "_".join([model.replace("-", "_"), instance])
     object_suffix = mapping["object_suffix"]
-    object_id = instance_no_slash
-    object_name = "-".join([object_id,object_suffix])
 
-    path = "/".join([DISCOVERY_PREFIX, device_type, object_id, object_name, "config"])
+    path = "/".join([DISCOVERY_PREFIX, device_type, object_id, object_suffix, "config"])
 
     # check timeout
     now = time.time()
     if path in discovery_timeouts:
         if discovery_timeouts[path] > now:
-            return False
+            return
 
     discovery_timeouts[path] = now + DISCOVERY_INTERVAL
 
     config = mapping["config"].copy()
-    config["name"] = object_name
-    config["state_topic"] = topic
-    config["unique_id"] = object_name
-    config["device"] = { "identifiers": object_id, "name": object_id, "model": model, "manufacturer": "rtl_433" }
+    config["state_topic"] = "/".join([MQTT_TOPIC, model, instance, channel, topic])
+    config["name"] = " ".join([model.replace("-", " "), instance, object_suffix])
+    config["unique_id"] = "".join(["rtl433", device_type, instance, object_suffix])
+    config["availability_topic"] = "/".join([MQTT_TOPIC, "status"])
 
-    if DEBUG:
-        print(path,":",json.dumps(config))
+    # add Home Assistant device info
 
-    mqttc.publish(path, json.dumps(config), qos=0, retain=True)
+    manufacturer, model = model.split("-", 1)
 
-    return True
+    device = {}
+    device["identifiers"] = instance
+    device["name"] = instance
+    device["model"] = model
+    device["manufacturer"] = manufacturer
+    config["device"] = device
 
+    mqttc.publish(path, json.dumps(config),  qos=0, retain=True)
 
+    if DEBUG == 'true':
+        print("Sending Config to path {} : {}".format(path,json.dumps(config)))
 
-def bridge_event_to_hass(mqttc, topicprefix, data):
+def bridge_event_to_hass(mqttc, topic, data):
     """Translate some rtl_433 sensor data to Home Assistant auto discovery."""
 
     if "model" not in data:
         # not a device event
         return
-
     model = sanitize(data["model"])
 
-    skipped_keys = []
-    published_keys = []
-
-    instance = rtl_433_device_topic(data)
+    if "id" in data:
+        instance = str(data["id"])
     if not instance:
         # no unique device identifier
-        if DEBUG:
-            print("No suitable identifier found for model: ", model)
         return
+
+    if "channel" in data:
+        channel = str(data["channel"])
+    else:
+        channel = '0'
 
     # detect known attributes
     for key in data.keys():
         if key in mappings:
-            # topic = "/".join([topicprefix,"devices",model,instance,key])
-            topic = "/".join([topicprefix,"devices",instance,key])
-            if publish_config(mqttc, topic, model, instance, mappings[key]):
-                published_keys.append(key)
-        else:
-            if key not in SKIP_KEYS:
-                skipped_keys.append(key)
-
-    if published_keys and DEBUG:
-        print("Published %s: %s" % (instance, ", ".join(published_keys)))
-
-        if skipped_keys and DEBUG:
-            print("Skipped %s: %s" % (instance, ", ".join(skipped_keys)))
+            publish_config(mqttc, key, model, instance, channel, mappings[key])
+            if DEBUG == 'true':
+                print("Received key {} for {}".format(key, model))
 
 
 def rtl_433_bridge():
@@ -524,7 +498,11 @@ def rtl_433_bridge():
 
 def run():
     """Run main or daemon."""
-   
+    # with daemon.DaemonContext(files_preserve=[sock]):
+    #  detach_process=True
+    #  uid
+    #  gid
+    #  working_directory
     rtl_433_bridge()
 
 
