@@ -23,6 +23,7 @@ mqtt_retain: 'true'
 protocol: '-R 11 -R 40 -R 41 -R 55 -R 74'
 discovery_prefix: homeassistant
 discovery_interval: 600
+debug: false
 ```
 
 ### Option: `mqtt_host`
@@ -63,6 +64,10 @@ The mqtt prefix for autodiscovery. `homeassistant` should work. If you use anoth
 
 `600` means Home Assisatnt will check for new devices every 600 seconds. 
 
+### Option: 'debug'
+
+Set debug to `true` if you want to see extra logging. This is noisy though, so I would only run it when actively troubleshooting. Leave at false all other times. 
+
 ## Known issues and limitations
 
 - This add-on is totally beta. 
@@ -80,9 +85,3 @@ based on the following:
 - ``MAJOR``: Incompatible or major changes.
 - ``MINOR``: Backwards-compatible new features and enhancements.
 - ``PATCH``: Backwards-compatible bugfixes and package updates.
-
-
-
-
-
-
