@@ -1,6 +1,6 @@
 {
   "name": "Acurite to Home Assistant",
-  "version": "0.3",
+  "version": "0.3.1",
   "slug": "acurite2mqtt",
   "description": "Acurite Sensors to Home Assistant via MQTT with Autodiscovery",
   "url": "https://github.com/thejeffreystone/hassio_addons",
@@ -18,7 +18,8 @@
     "mqtt_retain" : "true",
     "protocol": "-R 11 -R 40 -R 41 -R 55 -R 74",
     "discovery_prefix": "homeassistant",
-    "discovery_interval": 600
+    "discovery_interval": 600,
+    "debug": "false"
   },
   "schema":
     {
@@ -29,7 +30,8 @@
     "mqtt_retain" : "str",
     "protocol": "str",
     "discovery_prefix": "str",
-    "discovery_interval": "int" 
+    "discovery_interval": "int",
+    "debug": "bool"
    }
 }
 
