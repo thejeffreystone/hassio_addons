@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1b]
+### Changed
+- Updated USB Condif to correct usb error. 
+- Modified startup config
+Thanks @staniel1881 for the assist!
+
 ## [0.3.1]
 ### Changed
 - Added Debug option to print messages to log
