@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated USB Condif to correct usb error. 
 - Modified startup config
-Thanks @staniel1881 for the assist!
+- Thanks @staniel1881 for the assist!
 
 ## [0.3.1]
 ### Changed
