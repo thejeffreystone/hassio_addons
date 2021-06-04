@@ -1,0 +1,38 @@
+{
+  "name": "SDR to Home Assistant",
+  "version": "0.1.0b",
+  "slug": "sdr2mqtt",
+  "description": "SDR/RTL Sensors to Home Assistant via MQTT with Autodiscovery",
+  "url": "https://github.com/thejeffreystone/hassio_addons",
+
+  "startup": "services",
+  "arch": ["aarch64", "amd64", "armhf", "armv7", "i386"],
+  "usb": true,
+  "options":
+    {
+    "mqtt_host": "192.168.1.100",
+    "mqtt_user": "user",
+    "mqtt_password": "pass",
+    "mqtt_topic": "rtl_433",
+    "mqtt_retain" : "true",
+    "frequency" : "-f 433.92M",
+    "protocol" : " ",
+    "discovery_prefix": "homeassistant",
+    "discovery_interval": 600,
+    "debug": "false"
+  },
+  "schema":
+    {
+    "mqtt_host": "str",
+    "mqtt_user": "str",
+    "mqtt_password": "str",
+    "mqtt_topic": "str",
+    "mqtt_retain" : "str",
+    "frequency" : "str",
+    "protocol": "str",
+    "discovery_prefix": "str",
+    "discovery_interval": "int",
+    "debug": "bool"
+   }
+}
+
