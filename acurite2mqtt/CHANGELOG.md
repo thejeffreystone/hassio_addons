@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2b]
+### Added
+- Brightness defintion to attempt fix for #10. 
+- KPa definition to auto discovery. 
+
 ## [0.3.1b]
 ### Changed
 - Updated USB Condif to correct usb error. 

@@ -120,6 +120,17 @@ mappings = {
         }
     },
 
+    "pressure_kPa": {
+        "device_type": "sensor",
+        "object_suffix": "P",
+        "config": {
+            "device_class": "pressure",
+            "name": "Pressure",
+            "unit_of_measurement": "kPa",
+            "value_template": "{{ value|float }}"
+        }
+    },
+
     "wind_speed_km_h": {
         "device_type": "sensor",
         "object_suffix": "WS",
@@ -329,6 +340,17 @@ mappings = {
         "config": {
             "device_class": "illuminance",
             "name": "Outside Luminancee",
+            "unit_of_measurement": "lux",
+            "value_template": "{{ value|int }}"
+        }
+    },
+
+    "brightness": {
+        "device_type": "sensor",
+        "object_suffix": "lux",
+        "config": {
+            "device_class": "illuminance",
+            "name": "Brightness",
             "unit_of_measurement": "lux",
             "value_template": "{{ value|int }}"
         }
