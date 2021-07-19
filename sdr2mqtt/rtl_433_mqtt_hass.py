@@ -247,7 +247,7 @@ mappings = {
         "config": {
             "name": "Rain Total",
             "unit_of_measurement": "in",
-            "value_template": "{{ float(value|float) * 25.4 | round(2) }}"
+            "value_template": "{{ value|float }}"
         }
     },
 
@@ -257,7 +257,7 @@ mappings = {
         "config": {
             "name": "Rain Rate",
             "unit_of_measurement": "in/h",
-            "value_template": "{{ float(value|float) * 25.4 | round(2) }}"
+            "value_template": "{{ value|float }}"
         }
     },
 

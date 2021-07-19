@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.5b]
+### Changed
+- More Rain gauge bug fixes. 
+
 ## [0.3.4b]
 ### Changed
 - Updated Rain Gauge unit of measurements in device definition.
