@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3b]
+### Added
+- Units to the config so you can set to metric or customary/imperial  
+
 ## [0.3.2b]
 ### Added
 - Brightness defintion to attempt fix for #10. 
