@@ -22,6 +22,7 @@ mqtt_topic: rtl_433
 mqtt_retain: 'true'
 frequency: '-f 433.92M'
 protocol: ''
+units: 'si'
 discovery_prefix: homeassistant
 discovery_interval: 600
 debug: false
@@ -61,6 +62,12 @@ is the Accurite sensors. If the protocol is blank it will listen for all devices
 which may be noisy. Blank is the default with this addon. Consult the following readme for protocols. 
 
 For all possible protocols visit <https://github.com/thejeffreystone/hassio_addons/blob/main/acurite2mqtt/PROTOCOLS.md>
+
+### Option: `units`
+
+Sets the meansurement units. 
+- `si` = Metric
+- `customary` = Imperial / Customary  
 
 ### Option: `discovery_prefix`
 
