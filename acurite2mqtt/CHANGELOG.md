@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.6b]
+### Added
+- Added a definition for pressure in inHG 
+
 ## [0.3.5b]
 ### Changed
 - More Rain gauge bug fixes. 
