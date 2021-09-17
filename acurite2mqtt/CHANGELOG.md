@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.8b]
+### Added
+- Added new definition for light_klx value from Brersser 7in1
+
 ## [0.3.7b]
 ### Added
 - Added new whitelist option. Thanks to [@pdhruska](https://github.com/pdhruska) for the code.
