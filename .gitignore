@@ -1,5 +1,6 @@
 
 # ignore any of these files no matter where they are using double *
+acurite2mqtt-beta/
 .devcontainer/
 **.DS_Store
 **._*
