@@ -1,6 +1,6 @@
 {
   "name": "SDR to Home Assistant",
-  "version": "0.1.5b",
+  "version": "0.1.6b",
   "slug": "sdr2mqtt",
   "description": "SDR/RTL Sensors to Home Assistant via MQTT with Autodiscovery",
   "url": "https://github.com/thejeffreystone/hassio_addons",
@@ -11,6 +11,7 @@
   "options":
     {
     "mqtt_host": "192.168.1.100",
+    "mqtt_port": 1883,
     "mqtt_user": "user",
     "mqtt_password": "pass",
     "mqtt_topic": "rtl_433",
@@ -25,6 +26,7 @@
   "schema":
     {
     "mqtt_host": "str",
+    "mqtt_port": "int",
     "mqtt_user": "str",
     "mqtt_password": "str",
     "mqtt_topic": "str",

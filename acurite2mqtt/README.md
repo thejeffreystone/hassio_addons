@@ -16,6 +16,7 @@ Example add-on configuration:
 
 ```yaml
 mqtt_host: 192.168.7.100
+mqtt_port: 1883
 mqtt_user: mqtt_user
 mqtt_password: mqtt_pass
 mqtt_topic: rtl_433
@@ -32,6 +33,10 @@ debug: false
 ### Option: `mqtt_host`
 
 The `mqtt_host` option is the ip address of your mqtt server. If you are using the embeded server in Home Assistant just use your instances ip address.
+
+### Option: `mqtt_port`
+
+The `mqtt_port` option is the port of your mqtt server. If you are using the embeded server in Home Assistant just leave this as 1883.
 
 ### Option: `mqtt_user`
 

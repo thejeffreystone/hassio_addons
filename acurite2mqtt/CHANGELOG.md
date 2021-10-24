@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.9b]
+### Added
+- Added port option in the config so now you can use other ports than the default 1883
+
 ## [0.3.8b]
 ### Added
 - Added new definition for light_klx value from Brersser 7in1
