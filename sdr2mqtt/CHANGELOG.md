@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.7]
+### Added
+- Added consumption definition for gas meters
+
 ## [0.1.6]
 ### Added
 - Added port to the config so you can use mwtt ports other than 1883
