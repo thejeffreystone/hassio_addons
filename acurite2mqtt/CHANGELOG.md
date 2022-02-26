@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.10b]
 ### Added
 - Added consumption definition for gas meters
+- Update rtl_433 to version 21.12-63-g2d041b5d
 
 ## [0.3.9b]
 ### Added
