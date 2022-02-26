@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.9]
+### Changed
+- Updated Autodiscovery to handle model values that were not in manufacturer-model format. 
+
+
 ## [0.1.8]
 ### Added
 - Added last_seen enity which should be the last time Home Assistant saw an update from 
