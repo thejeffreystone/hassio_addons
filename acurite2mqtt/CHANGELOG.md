@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.11b]
+### Added
+- Added last_seen enity which should be the last time Home Assistant saw an update from 
+  rtl_433.
+- Added Freq definition to autodiscovery which reports device frequency
+- Added channel definition to autodiscovery which report device channel 
+- Added wind_max_km_h definition to autodiscovery
+
 ## [0.3.10b]
 ### Added
 - Added consumption definition for gas meters

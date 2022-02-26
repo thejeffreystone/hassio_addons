@@ -17,7 +17,7 @@ import json
 import os
 import time
 import paho.mqtt.client as mqtt
-# from datetime import datetime
+#from datetime import datetime
 
 MQTT_HOST = os.environ['MQTT_HOST']
 MQTT_PORT = os.environ['MQTT_PORT']
@@ -39,6 +39,36 @@ discovery_timeouts = {}
 whitelist_list = WHITELIST.split()
 
 mappings = {
+    "time": {
+        "device_type": "sensor",
+        "object_suffix": "last_seen",
+        "config": {
+            "device_class": "timestamp",
+            "name": "last_seen",
+            "unit_of_measurement": "",
+            "value_template": "{{ value }}"
+        }
+    },
+    "freq": {
+        "device_type": "sensor",
+        "object_suffix": "freq",
+        "config": {
+            "device_class": "frequency",
+            "name": "",
+            "unit_of_measurement": "Mhz",
+            "value_template": "{{ value }}"
+        }
+    },
+    "channel": {
+        "device_type": "sensor",
+        "object_suffix": "channel",
+        "config": {
+            "device_class": "",
+            "name": "",
+            "unit_of_measurement": "",
+            "value_template": "{{ value }}"
+        }
+    },
     "temperature_C": {
         "device_type": "sensor",
         "object_suffix": "T",
@@ -76,6 +106,7 @@ mappings = {
             "device_class": "temperature",
             "name": "Temperature",
             "unit_of_measurement": "°F",
+            "assumed_state" : "True",
             "value_template": "{{ value|float }}"
         }
     },
@@ -206,12 +237,22 @@ mappings = {
         }
     },
 
-    "wind_max_m_s": {
+    "wind_max_km_h": {
         "device_type": "sensor",
         "object_suffix": "GS",
         "config": {
             "name": "Wind max",
             "unit_of_measurement": "km/h",
+            "value_template": "{{ value|float }}"
+        }
+    },
+
+    "wind_max_m_s": {
+        "device_type": "sensor",
+        "object_suffix": "GS",
+        "config": {
+            "name": "Wind max",
+            "unit_of_measurement": "m/s",
             "value_template": "{{ float(value|float) * 3.6 | round(2) }}"
         }
     },
@@ -304,6 +345,7 @@ mappings = {
         "config": {
             "device_class": "signal_strength",
             "unit_of_measurement": "dB",
+            "entity_category": "diagnostic",
             "value_template": "{{ value|float|round(2) }}"
         }
     },

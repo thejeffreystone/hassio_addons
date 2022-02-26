@@ -17,7 +17,7 @@ import json
 import os
 import time
 import paho.mqtt.client as mqtt
-# from datetime import datetime
+#from datetime import datetime
 
 MQTT_HOST = os.environ['MQTT_HOST']
 MQTT_PORT = os.environ['MQTT_PORT']
@@ -25,6 +25,8 @@ MQTT_USERNAME = os.environ['MQTT_USERNAME']
 MQTT_PASSWORD = os.environ['MQTT_PASSWORD']
 MQTT_TOPIC = os.environ['MQTT_TOPIC']
 DISCOVERY_PREFIX = os.environ['DISCOVERY_PREFIX']
+WHITELIST_ENABLE = os.environ['WHITELIST_ENABLE']
+WHITELIST = os.environ['WHITELIST']
 DISCOVERY_INTERVAL = os.environ['DISCOVERY_INTERVAL']
 DEBUG = os.environ['DEBUG']
 
@@ -34,7 +36,39 @@ DISCOVERY_INTERVAL = int(DISCOVERY_INTERVAL)
 
 discovery_timeouts = {}
 
+whitelist_list = WHITELIST.split()
+
 mappings = {
+    "time": {
+        "device_type": "sensor",
+        "object_suffix": "last_seen",
+        "config": {
+            "device_class": "timestamp",
+            "name": "last_seen",
+            "unit_of_measurement": "",
+            "value_template": "{{ value }}"
+        }
+    },
+    "freq": {
+        "device_type": "sensor",
+        "object_suffix": "freq",
+        "config": {
+            "device_class": "frequency",
+            "name": "",
+            "unit_of_measurement": "Mhz",
+            "value_template": "{{ value }}"
+        }
+    },
+    "channel": {
+        "device_type": "sensor",
+        "object_suffix": "channel",
+        "config": {
+            "device_class": "",
+            "name": "",
+            "unit_of_measurement": "",
+            "value_template": "{{ value }}"
+        }
+    },
     "temperature_C": {
         "device_type": "sensor",
         "object_suffix": "T",
@@ -72,6 +106,7 @@ mappings = {
             "device_class": "temperature",
             "name": "Temperature",
             "unit_of_measurement": "°F",
+            "assumed_state" : "True",
             "value_template": "{{ value|float }}"
         }
     },
@@ -127,6 +162,17 @@ mappings = {
             "device_class": "pressure",
             "name": "Pressure",
             "unit_of_measurement": "kPa",
+            "value_template": "{{ value|float }}"
+        }
+    },
+    
+    "pressure_inHg": {
+        "device_type": "sensor",
+        "object_suffix": "P",
+        "config": {
+            "device_class": "pressure",
+            "name": "Pressure",
+            "unit_of_measurement": "inHg",
             "value_template": "{{ value|float }}"
         }
     },
@@ -191,12 +237,22 @@ mappings = {
         }
     },
 
-    "wind_max_m_s": {
+    "wind_max_km_h": {
         "device_type": "sensor",
         "object_suffix": "GS",
         "config": {
             "name": "Wind max",
             "unit_of_measurement": "km/h",
+            "value_template": "{{ value|float }}"
+        }
+    },
+
+    "wind_max_m_s": {
+        "device_type": "sensor",
+        "object_suffix": "GS",
+        "config": {
+            "name": "Wind max",
+            "unit_of_measurement": "m/s",
             "value_template": "{{ float(value|float) * 3.6 | round(2) }}"
         }
     },
@@ -289,6 +345,7 @@ mappings = {
         "config": {
             "device_class": "signal_strength",
             "unit_of_measurement": "dB",
+            "entity_category": "diagnostic",
             "value_template": "{{ value|float|round(2) }}"
         }
     },
@@ -356,7 +413,6 @@ mappings = {
         }
     },
 
-
     "brightness": {
         "device_type": "sensor",
         "object_suffix": "lux",
@@ -396,6 +452,7 @@ mappings = {
             "unit_of_measurement": "mi",
             "value_template": "{{ value|int }}"
         }
+    
     },
     "consumption": {
         "device_type": "meter",
@@ -439,7 +496,7 @@ def mqtt_message(client, userdata, msg):
         # Decode JSON payload
         data = json.loads(msg.payload.decode())
         if DEBUG == 'true':
-            print("Publishing to {} : {}".format(msg.topic, json.dumps(data)))
+            print("Received message: {} : {}".format(msg.topic, json.dumps(data)))
         bridge_event_to_hass(client, msg.topic, data)
 
     except json.decoder.JSONDecodeError:
@@ -508,6 +565,12 @@ def bridge_event_to_hass(mqttc, topic, data):
         instance = str(data["id"])
     if not instance:
         # no unique device identifier
+        return
+    
+    if (WHITELIST_ENABLE == 'true') and (instance not in whitelist_list):
+        # not an authorized device
+        if DEBUG == 'true':
+            print("Device Id:{} not in whitelist".format(instance))
         return
 
     if "channel" in data:
