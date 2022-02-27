@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.10]
+### Changed
+- Adding back in frequnecey and removing white list. Accidentlly added them
+
 ## [0.1.9]
 ### Changed
 - Updated Autodiscovery to handle model values that were not in manufacturer-model format. 
