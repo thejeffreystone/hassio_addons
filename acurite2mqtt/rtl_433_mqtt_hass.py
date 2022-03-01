@@ -110,6 +110,28 @@ mappings = {
             "value_template": "{{ value|float }}"
         }
     },
+     "temperature_1_F": {
+        "device_type": "sensor",
+        "object_suffix": "F",
+        "config": {
+            "device_class": "temperature",
+            "name": "Temperature 1",
+            "unit_of_measurement": "°F",
+            "assumed_state" : "True",
+            "value_template": "{{ value|float }}"
+        }
+    },
+    "temperature_2_F": {
+        "device_type": "sensor",
+        "object_suffix": "F",
+        "config": {
+            "device_class": "temperature",
+            "name": "Temperature 2",
+            "unit_of_measurement": "°F",
+            "assumed_state" : "True",
+            "value_template": "{{ value|float }}"
+        }
+    },
 
     "battery_ok": {
         "device_type": "sensor",

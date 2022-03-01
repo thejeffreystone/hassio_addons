@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.12b]
+### Changed
+- Added Definition for Temp from Thermopro TP12
+
 ## [0.1.11]
 ### Changed
 - Adding back in frequnecey And adding Whitelist

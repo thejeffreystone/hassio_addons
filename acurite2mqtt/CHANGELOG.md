@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.13b]
+### Changed
+- Added Definition for Temp from Thermopro TP12
+
 ## [0.3.12b]
 ### Changed
 - Updated Autodiscovery to handle model values that were not in manufacturer-model format. 
