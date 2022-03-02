@@ -606,7 +606,7 @@ def bridge_event_to_hass(mqttc, topic, data):
     # detect known attributes
     for key in data.keys():
         if key in mappings:
-            publish_config(mqttc, key, model, instance, channel, m[key])
+            publish_config(mqttc, key, model, instance, channel, mappings[key])
             if DEBUG == 'true':
                 print("Received key {} for {}".format(key, model))
 

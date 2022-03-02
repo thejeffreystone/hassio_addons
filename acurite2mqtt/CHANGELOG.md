@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.15b]
+### Bug fixing
+- Typo...I swear
+
 ## [0.3.14b]
 ### Bug fixing
 - Removed null device ID from new channel definition
