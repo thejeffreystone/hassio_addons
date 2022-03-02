@@ -6,8 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.14b]
+### Bug fixing
+- Removed null device ID from new channel definition
+
 ## [0.3.13b]
-### Changed
+### Added
 - Added Definition for Temp from Thermopro TP12
 
 ## [0.3.12b]
