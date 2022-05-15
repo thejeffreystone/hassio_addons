@@ -24,6 +24,7 @@ mqtt_retain: 'true'
 protocol: '-R 11 -R 40 -R 41 -R 55 -R 74'
 whitelist_enable: true
 whitelist: 2169 6417 9143 6449 6000 3125
+expire_after: 60
 units: 'si'
 discovery_prefix: homeassistant
 discovery_interval: 600
@@ -73,6 +74,10 @@ to scan/acquire new device id's.  But be cautious... any undesirable devices wil
 
 This is a `space separated` list of device id's that are desired to be received and processed.  Any devices that are not in this
 list will be ignored (if whitelist_enables is set to true).
+
+### Option: `expire_after`
+
+This is a `integer` value that will set an individual sensor entity to `unknown` if no payload is received within the specified seconds. The default value of 0 disables this feature.
 
 ### Option: `units`
 

@@ -29,6 +29,7 @@ WHITELIST_ENABLE = os.environ['WHITELIST_ENABLE']
 WHITELIST = os.environ['WHITELIST']
 DISCOVERY_INTERVAL = os.environ['DISCOVERY_INTERVAL']
 DEBUG = os.environ['DEBUG']
+EXPIRE_AFTER = os.environ['EXPIRE_AFTER']
 
 # Convert number environment variables to int
 MQTT_PORT = int(MQTT_PORT)
@@ -557,6 +558,7 @@ def publish_config(mqttc, topic, model, instance, channel, mapping):
     config["name"] = " ".join([model.replace("-", " "), instance, object_suffix])
     config["unique_id"] = "".join(["rtl433", device_type, instance, object_suffix])
     config["availability_topic"] = "/".join([MQTT_TOPIC, "status"])
+    config["expire_after"] = EXPIRE_AFTER
 
     # add Home Assistant device info
 
