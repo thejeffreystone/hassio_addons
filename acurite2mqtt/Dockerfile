@@ -4,7 +4,7 @@ FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 
-MAINTAINER Jeffrey Stone
+LABEL Jeffrey Stone
 
 LABEL Description="This image is used to start a the RTL433 to HASS script that will monitor for 433Mhz devcices and send the data to an MQTT server"
 
@@ -47,6 +47,7 @@ ENV MQTT_RETAIN "True"
 ENV MQTT_TOPIC rtl_433
 ENV PROTOCOL ""
 ENV WHITELIST_ENABLE False
+ENV EXPIRE_AFTER 0
 ENV WHITELIST ""
 ENV DISCOVERY_PREFIX homeassistant
 ENV DISCOVERY_INTERVAL 600
