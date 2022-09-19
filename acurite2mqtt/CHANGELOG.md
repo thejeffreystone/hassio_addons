@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.16b]
+- Bump to make sure latest 433_rtl is grabbed.
+
 ## [0.3.15b]
 ### Bug fixing
 - Typo...I swear
