@@ -559,6 +559,8 @@ def publish_config(mqttc, topic, model, instance, channel, mapping):
     config["unique_id"] = "".join(["rtl433", device_type, instance, object_suffix])
     config["availability_topic"] = "/".join([MQTT_TOPIC, "status"])
     config["expire_after"] = EXPIRE_AFTER
+    config["last_reset"] = "homeassistant.util.dt.utc_from_timestamp(0)"
+    config["state_class"] = "measurement"
 
     # add Home Assistant device info
 
@@ -593,7 +595,7 @@ def bridge_event_to_hass(mqttc, topic, data):
     if not instance:
         # no unique device identifier
         return
-    
+
     if (WHITELIST_ENABLE == 'true') and (instance not in whitelist_list):
         # not an authorized device
         if DEBUG == 'true':
