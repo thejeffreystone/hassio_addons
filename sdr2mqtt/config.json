@@ -1,6 +1,6 @@
 {
   "name": "SDR to Home Assistant",
-  "version": "0.1.16b",
+  "version": "0.1.17b",
   "slug": "sdr2mqtt",
   "description": "SDR/RTL Sensors to Home Assistant via MQTT with Autodiscovery",
   "url": "https://github.com/thejeffreystone/hassio_addons",
@@ -20,6 +20,7 @@
     "protocol" : " ",
     "whitelist_enable": "false",
     "whitelist": "",
+    "expire_after": 0,
     "units": "si",
     "discovery_prefix": "homeassistant",
     "discovery_interval": 600,
@@ -37,6 +38,7 @@
     "protocol": "str",
     "whitelist_enable": "bool",
     "whitelist": "str",
+    "expire_after": "int",
     "units": "str",
     "discovery_prefix": "str",
     "discovery_interval": "int",
