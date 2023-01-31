@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.19b]
+- Bump to make sure latest 433_rtl is grabbed.
+- New Statistic Attributes from @murtis
+
 ## [0.3.18b]
 - Some major improvements/security enhancements thanks to @HalideGlow
 - Updated battery percentage value...thanks @TomWS1
