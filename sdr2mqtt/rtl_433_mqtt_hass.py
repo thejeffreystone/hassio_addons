@@ -29,6 +29,7 @@ WHITELIST_ENABLE = os.environ['WHITELIST_ENABLE']
 WHITELIST = os.environ['WHITELIST']
 DISCOVERY_INTERVAL = os.environ['DISCOVERY_INTERVAL']
 DEBUG = os.environ['DEBUG']
+EXPIRE_AFTER = os.environ['EXPIRE_AFTER']
 
 # Convert number environment variables to int
 MQTT_PORT = int(MQTT_PORT)
@@ -139,7 +140,7 @@ mappings = {
             "device_class": "battery",
             "name": "Battery",
             "unit_of_measurement": "%",
-            "value_template": "{{ float(value|int) * 99 + 1 }}"
+            "value_template": "{{ float(value) * 99 + 1 | int }}"
         }
     },
 
@@ -557,6 +558,9 @@ def publish_config(mqttc, topic, model, instance, channel, mapping):
     config["name"] = " ".join([model.replace("-", " "), instance, object_suffix])
     config["unique_id"] = "".join(["rtl433", device_type, instance, object_suffix])
     config["availability_topic"] = "/".join([MQTT_TOPIC, "status"])
+    config["expire_after"] = EXPIRE_AFTER
+    config["last_reset"] = "homeassistant.util.dt.utc_from_timestamp(0)"
+    config["state_class"] = "measurement"
 
     # add Home Assistant device info
 
@@ -591,7 +595,7 @@ def bridge_event_to_hass(mqttc, topic, data):
     if not instance:
         # no unique device identifier
         return
-    
+
     if (WHITELIST_ENABLE == 'true') and (instance not in whitelist_list):
         # not an authorized device
         if DEBUG == 'true':
