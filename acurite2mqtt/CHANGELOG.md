@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.3.19b]
 - Bump to make sure latest 433_rtl is grabbed.
-- New Statistic Attributes from @murtis
+- New Statistic Attributes from @curtismuntz
 
 ## [0.3.18b]
 - Some major improvements/security enhancements thanks to @HalideGlow
