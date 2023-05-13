@@ -56,7 +56,7 @@ mappings = {
         "config": {
             "device_class": "frequency",
             "name": "",
-            "unit_of_measurement": "Mhz",
+            "unit_of_measurement": "MHz",
             "value_template": "{{ value }}"
         }
     },
@@ -64,7 +64,9 @@ mappings = {
         "device_type": "sensor",
         "object_suffix": "channel",
         "config": {
+            "device_class": "enum",
             "name": "device_channel",
+            "options": ["A", "B", "C"],
             "unit_of_measurement": "",
             "value_template": "{{ value }}"
         }
@@ -605,7 +607,7 @@ def bridge_event_to_hass(mqttc, topic, data):
     if "channel" in data:
         channel = str(data["channel"])
     else:
-        channel = '0'
+        channel = 'A'
 
     # detect known attributes
     for key in data.keys():

@@ -56,7 +56,7 @@ mappings = {
         "config": {
             "device_class": "frequency",
             "name": "",
-            "unit_of_measurement": "Mhz",
+            "unit_of_measurement": "MHz",
             "value_template": "{{ value }}"
         }
     },
