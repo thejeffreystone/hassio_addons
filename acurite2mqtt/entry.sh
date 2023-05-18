@@ -13,6 +13,7 @@ DISCOVERY_PREFIX="$(bashio::config 'discovery_prefix')"
 DISCOVERY_INTERVAL="$(bashio::config 'discovery_interval')"
 WHITELIST_ENABLE="$(bashio::config 'whitelist_enable')"
 WHITELIST="$(bashio::config 'whitelist')"
+AUTO_DISCOVERY="$(bashio::config 'auto_discovery')"
 DEBUG="$(bashio::config 'debug')"
 EXPIRE_AFTER="$(bashio::config 'expire_after')"
 
@@ -38,6 +39,7 @@ bashio::log.info "Expire After =" $EXPIRE_AFTER
 bashio::log.info "UNITS =" $UNITS
 bashio::log.info "DISCOVERY_PREFIX =" $DISCOVERY_PREFIX
 bashio::log.info "DISCOVERY_INTERVAL =" $DISCOVERY_INTERVAL
+bashio::log.info "AUTO_DISCOVERY =" $AUTO_DISCOVERY
 bashio::log.info "DEBUG =" $DEBUG
 bashio::log.blue "::::::::rtl_433 running output::::::::"
 
