@@ -16,6 +16,7 @@ ENV MQTT_HOST=127.0.0.1 \
     WHITELIST="" \
     DISCOVERY_PREFIX=homeassistant \
     DISCOVERY_INTERVAL=600 \
+    AUTO_DISCOVERY=False \
     DEBUG=False \
     LANG=C.UTF-8
 

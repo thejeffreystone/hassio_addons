@@ -63,6 +63,10 @@ which may be noisy. Blank is the default with this addon. Consult the following 
 
 For all possible protocols visit <https://github.com/thejeffreystone/hassio_addons/blob/main/acurite2mqtt/PROTOCOLS.md>
 
+### Option: `expire_after`
+
+This is a `integer` value that will set an individual sensor entity to `unknown` if no payload is received within the specified seconds. The default value of 0 disables this feature.
+
 ### Option: `units`
 
 Sets the meansurement units. 
