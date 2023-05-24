@@ -674,7 +674,7 @@ def bridge_event_to_hass(mqttc, topic, data):
     if "channel" in data:
         channel = str(data["channel"])
     else:
-        channel = 'A'
+        channel = '0'
 
     device = '{}-{}'.format(data['id'],data['model'])
      
