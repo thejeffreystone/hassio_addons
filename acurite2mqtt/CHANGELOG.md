@@ -4,8 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.21]
-- Fixing wind speed unit of measuremnt
+## [0.3.22]
+- Fixing wind speed unit of measurement
+- Fixing Rain sensor unit of measurement
+
 
 ## [0.3.20b]
 - Fixed issue where debug and whitelist_enable are incorrectly marked as being on when they are off.

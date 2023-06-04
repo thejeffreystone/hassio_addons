@@ -352,7 +352,7 @@ mappings = {
         "object_suffix": "RT",
         "config": {
             "device_class": "precipitation",
-            "state_class":"total_increasing",
+            "state_class":"measurement",
             "name": "Rain Total",
             "unit_of_measurement": "mm",
             "value_template": "{{ value|float }}"
@@ -376,7 +376,7 @@ mappings = {
         "object_suffix": "RT",
         "config": {
             "device_class": "precipitation",
-            "state_class":"total_increasing",
+            "state_class":"measurement",
             "name": "Rain Total",
             "unit_of_measurement": "in",
             "value_template": "{{ value|float }}"
@@ -589,10 +589,7 @@ def mqtt_message(client, userdata, msg):
     try:
         # Decode JSON payload
         data = json.loads(msg.payload.decode())
-        device = '{}'.format(data['id'])
-        if (device not in rate_limited) or ( (datetime.now() - rate_limited[device]).seconds > 30 ):
-            logging.debug("Received Device Data: {} : {}".format(msg.topic, json.dumps(data)))
-        rate_limited[device] = datetime.now()
+        logging.debug("Received Device Data from SDR and sent to MQTT: {} : {}".format(msg.topic, json.dumps(data)))
         bridge_event_to_hass(client, msg.topic, data)
 
     except json.decoder.JSONDecodeError:
@@ -650,7 +647,7 @@ def publish_config(mqttc, topic, model, instance, channel, mapping):
     config["device"] = device
 
     mqttc.publish(path, json.dumps(config),  qos=0, retain=True)
-    logging.debug("Config sent to {} : {}".format(path,json.dumps(config)))
+    logging.debug("Device Config was saved to {} : {}".format(path,json.dumps(config)))
            
 
 def bridge_event_to_hass(mqttc, topic, data):
@@ -670,7 +667,6 @@ def bridge_event_to_hass(mqttc, topic, data):
         logging.warning("Device Id:{} doesn't appear to be a actual device. Skipping..".format(data['id']))
         return
         
-    
     if "channel" in data:
         channel = str(data["channel"])
     else:
@@ -681,14 +677,14 @@ def bridge_event_to_hass(mqttc, topic, data):
     if (whitelist_on == True) and (instance not in whitelist_list):
         # Let's reduce the noise in the log and hide the duplicate notifications.
         if (instance not in blocked):
-            logging.info("Device Id:{} Model: {} not in whitelist. Add to the Whitelist to send data to Home Assistant".format(data['id'],data['model']))
+            logging.info("Device Id:{} Model: {} not in whitelist. Add to the Whitelist to create device in Home Assistant.".format(data['id'],data['model']))
         blocked.append('{}'.format(data['id']))
         return
 
     if (auto_discovery == True):
         # Let's reduce the noise in the log and hide the duplicate notifications.
         if (device not in rate_limited) or ( (datetime.now() - rate_limited[device]).seconds > 30 ):
-            logging.debug('Sending {} config to Home Assistant.'.format(device))
+            logging.debug('Device: {} - Creating/Updating device config in Home Assistant for Auto discovery.'.format(device))
         rate_limited[device] = datetime.now()
         # detect known attributes
         for key in data.keys():
