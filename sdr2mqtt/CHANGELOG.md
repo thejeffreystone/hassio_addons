@@ -4,8 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.23] - Not Released
-
+## [0.1.23]
+- Nothing to see here, previous update was good, but some changes upstream happened.
+- verbosity of the rtl_433 messages changed, so not everything you are use to seeing at startup in the log are happening.
 
 ## [0.1.22] - Borked - Maybe
 ROLLED THIS BACK
