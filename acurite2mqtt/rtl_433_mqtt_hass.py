@@ -352,7 +352,7 @@ mappings = {
         "object_suffix": "RT",
         "config": {
             "device_class": "precipitation",
-            "state_class":"measurement",
+            "state_class":"total_increasing",
             "name": "Rain Total",
             "unit_of_measurement": "mm",
             "value_template": "{{ value|float }}"
@@ -376,7 +376,7 @@ mappings = {
         "object_suffix": "RT",
         "config": {
             "device_class": "precipitation",
-            "state_class":"measurement",
+            "state_class":"total_increasing",
             "name": "Rain Total",
             "unit_of_measurement": "in",
             "value_template": "{{ value|float }}"
