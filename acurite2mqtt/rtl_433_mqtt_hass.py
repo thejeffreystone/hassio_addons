@@ -566,6 +566,29 @@ mappings = {
             "value_template": "{{ value|int }}"
         }
     },
+
+    "detect_wet": {
+        "device_type": "binary_sensor",
+        "object_suffix": "detect_wet",
+        "config": {
+            "device_class": "moisture",
+            "entity_category": "diagnostic",
+            "force_update": "true",
+            "payload_on": "1",
+            "payload_off": "0"
+        }
+    },
+    "event": {
+        "device_type": "sensor",
+        "object_suffix": "event",
+        "config": {
+            "device_class": "enum",
+            "name": "event",
+            "options": ["Button Press", "Water Leak", "Battery Low"],
+            "entity_category": "diagnostic",
+            "value_template": "{{ value }}"
+        }
+
 }
 
 
